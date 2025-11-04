@@ -64,10 +64,10 @@ function initConnections() {
       
       // 在 Netlify 部署環境中，__dirname 指向 /var/task
       // Functions 目錄下的檔案會被部署到 /var/task/
-      // 所以 database/airtable.js 應該在 /var/task/database/airtable.js
-      const localPath = path.join(__dirname, 'database', 'airtable.js');
+      // 優先使用同目錄下的 airtable.js（已複製到 functions 目錄）
+      const localPath = path.join(__dirname, 'airtable.js');
       // 備用路徑：如果 Netlify 保留了完整路徑結構
-      const fallbackPath1 = path.resolve(__dirname, 'backend', 'netlify', 'functions', 'database', 'airtable.js');
+      const fallbackPath1 = path.join(__dirname, 'database', 'airtable.js');
       const fallbackPath2 = path.resolve(__dirname, '../../../database/airtable.js');
       
       let airtablePath;
@@ -257,10 +257,10 @@ exports.handler = async (event, context) => {
           
           // 在 Netlify 部署環境中，__dirname 指向 /var/task
           // Functions 目錄下的檔案會被部署到 /var/task/
-          // 所以 database/airtable.js 應該在 /var/task/database/airtable.js
-          const localPath = path.join(__dirname, 'database', 'airtable.js');
+          // 優先使用同目錄下的 airtable.js（已複製到 functions 目錄）
+          const localPath = path.join(__dirname, 'airtable.js');
           // 備用路徑：如果 Netlify 保留了完整路徑結構
-          const fallbackPath1 = path.resolve(__dirname, 'backend', 'netlify', 'functions', 'database', 'airtable.js');
+          const fallbackPath1 = path.join(__dirname, 'database', 'airtable.js');
           const fallbackPath2 = path.resolve(__dirname, '../../../database/airtable.js');
           
           let airtablePath;
