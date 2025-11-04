@@ -1,0 +1,108 @@
+// Timeline Visual Component
+// 可重複使用的 Timeline 視覺化組件樣式（包含 Desktop 和 Mobile）
+
+// Desktop Styles
+// 需要嵌套在 .results-panel .timeline-content 下以確保正確應用
+.results-panel .timeline-content .timeline-visual
+  position relative
+  padding 20px 0px 30px
+  margin 0
+  width 100%
+  
+  // Timeline Track (桌面版隱藏)
+  .timeline-track
+    display none
+  
+  // Timeline Connector (桌面版連接線)
+  .timeline-connector
+    position absolute
+    left 0
+    right 0
+    width 88%
+    top 0
+    height 100%
+    z-index 0
+    margin 0 auto
+    
+    &::before
+      content ''
+      position absolute
+      left 0
+      top 37%
+      transform translateY(-50%)
+      width 100%
+      height 4px
+      background linear-gradient(to right, neutral-light 70%)
+      z-index 1
+    
+    &::after
+      content ''
+      position absolute
+      left 0
+      top 37%
+      transform translateY(-50%)
+      width 10%
+      height 4px
+      background linear-gradient(to right, primary-color, accent-color)
+      border-radius 25%
+      z-index 2
+  
+  // Timeline Events Container
+  .timeline-events
+    position absolute
+    top 0
+    left 0
+    width 100%
+    height 100%
+  
+  // Timeline Nodes Container (保留此處的引用，實際樣式在 resultsPanel.styl)
+  // .timeline-nodes-container 的樣式定義在 resultsPanel.styl 中
+
+// Mobile Styles
+// 注意：Mobile 樣式需要嵌套在 .results-panel .timeline-content 下
+// 以確保與 timeline-nodes-container 的移動版樣式正確配合
+@media (max-width: 768px)
+  .results-panel .timeline-content
+    .timeline-visual
+      padding 15px 0
+      position relative
+      width 100%
+      margin 0 0 20px
+      
+      // Timeline Track (移動版顯示)
+      .timeline-track
+        display block
+        position absolute
+        top 0
+        left 50%
+        transform translateX(-50%)
+        width 100%
+        height 100%
+        pointer-events none
+        
+        &::before
+          content ''
+          position absolute
+          left 21.3%
+          top 9%
+          width 8px
+          height 83%
+          background linear-gradient(to bottom, neutral-light 60%)
+          z-index 0
+          border-radius 15px
+        
+        &::after
+          content ''
+          position absolute
+          left 21.3%
+          top 9%
+          width 8px
+          height 10%
+          background linear-gradient(to bottom, primary-color, accent-color)
+          border-radius 15px
+          z-index 1
+      
+      // Timeline Connector (移動版隱藏)
+      .timeline-connector
+        display none
+

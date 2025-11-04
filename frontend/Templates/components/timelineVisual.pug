@@ -1,0 +1,85 @@
+//- Timeline Visual Component
+//- 可重複使用的時間軸視覺化組件（可用 JS 動態渲染）
+
+.timeline-visual
+  .timeline-track
+  .timeline-connector
+  .timeline-nodes-container
+    //- Timeline Node 結構
+    //- 可透過 JS 動態渲染多個節點
+    .timeline-node
+      .node-date
+        span.month Oct
+        span.day 10
+      .node-icon
+        .node-circle
+      .node-info
+        .node-status Order Created
+        p.node-time 10:16
+    
+    //- Processing 狀態節點範例
+    .timeline-node.timeline-node--processing
+      .node-date
+        span.month
+        span.day TBD
+      .node-icon
+        .node-circle.node-circle--processing
+      .node-info
+        .node-status Destination Customs Process
+        p.node-time Processing...
+    
+    .timeline-node.timeline-node--processing
+      .node-date
+        span.month
+        span.day TBD
+      .node-icon
+        .node-circle.node-circle--processing
+      .node-info
+        .node-status In Transit
+        p.node-time Processing...
+    
+    //- Pending 狀態節點範例
+    .timeline-node.timeline-node--pending
+      .node-date
+        span.month
+        span.day TBD
+      .node-icon
+        .node-circle.node-circle--pending
+      .node-info
+        .node-status Out for Delivery
+        p.node-time --:--
+    
+    //- Completed 狀態節點範例
+    .timeline-node.timeline-node--completed
+      .node-date
+        span.month Oct
+        span.day 13
+      .node-icon
+        .node-circle.node-circle--completed
+      .node-info
+        .node-status In Transit
+        p.node-time 09:00
+    
+    .timeline-node.timeline-node--completed
+      .node-date
+        span.month Oct
+        span.day 13
+      .node-icon
+        .node-circle.node-circle--completed
+      .node-info
+        .node-status Shipment Completed
+        p.node-time 09:00
+  
+  //- Timeline Events（例如：Dry Ice Refilled）
+  .timeline-events
+    .event-dryice-refilled
+      .event-circle
+      .event-tag
+        span.event-tag-text Dry ice refilled (Terminal)
+        img.event-tag-icon(src="./images/icon-dryice.svg", alt="Dry Ice Refilled")
+    .event-dryice-refilled
+      .event-circle
+      .event-tag
+        span.event-tag-text Dry ice refilled
+        img.event-tag-icon(src="./images/icon-dryice.svg", alt="Dry Ice Refilled")
+

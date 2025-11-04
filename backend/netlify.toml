@@ -1,0 +1,65 @@
+# Netlify Configuration for TailorMed track
+
+[build]
+  # 建置命令 - 編譯 Pug 和 Stylus
+  # 這個檔案在 backend 目錄下，需要回到 track 目錄執行 compile.js
+  command = "cd .. && node compile.js"
+  
+  # 發布目錄（相對於 repository root）
+  # Repository root 在 /Users/arieshsieh/Develop/Development
+  # dist 目錄在 dist/Projects/TailorMed/track
+  publish = "dist/Projects/TailorMed/track"
+  
+  # Netlify Functions 目錄（相對於這個 netlify.toml 的位置）
+  # 現在在 backend/netlify/functions
+  functions = "netlify/functions"
+
+# 環境變數（在 Netlify Dashboard 設定）
+# [build.environment]
+#   RENDER_API_URL = "https://tailormed-tracking-api.onrender.com"
+
+# 重定向規則
+[[redirects]]
+  from = "/api/tracking"
+  to = "/.netlify/functions/tracking"
+  status = 200
+
+[[redirects]]
+  from = "/api/tracking-public"
+  to = "/.netlify/functions/tracking"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/tracking"
+  status = 200
+
+[[redirects]]
+  from = "/design"
+  to = "/design_ui.html"
+  status = 200
+
+[[redirects]]
+  from = "/basic"
+  to = "/basic.html"
+  status = 200
+
+[[redirects]]
+  from = "/standard"
+  to = "/standard.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# 安全標頭
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+

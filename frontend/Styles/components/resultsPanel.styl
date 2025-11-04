@@ -1,0 +1,1120 @@
+// Results Panel Component
+// 查詢結果面板組件
+
+@import '../variables'
+
+.results-panel
+  display flex
+  width 100%
+  max-width 1200px
+  background white
+  border-radius 16px
+  box-shadow panel-shadow
+  padding 28px 36px
+  flex-direction column
+  gap 20px
+  position relative
+  z-index 2
+
+  .results-title
+    font-size 1.75rem
+    font-weight 600
+    color primary-color
+
+  .results-description
+    font-size 0.95rem
+    color neutral-gray
+
+  .results-container
+    display flex
+    flex-direction row
+    gap 24px
+
+  .results-highlight
+    flex 6
+    padding 20px 24px
+    background rgba(neutral-light, 0.15)
+    border 1px solid rgba(37, 99, 235, 0.12)
+    border-radius 12px
+
+    .summary-grid
+      display grid
+      grid-template-columns repeat(2, 1fr)
+      gap 18px
+
+      .summary-field
+        display flex
+        flex-direction column
+        gap 6px
+
+        .field-label
+          font-size 0.75rem
+          font-weight 600
+          color neutral-gray
+          text-transform uppercase
+          letter-spacing 0.08em
+
+        .field-value
+          font-size 1.4rem
+          font-weight 600
+          color primary-color
+
+  .status-info
+    flex 4
+    background primary-color
+    border-radius 12px
+    padding 20px
+    display flex
+    flex-direction column
+    gap 20px
+    position relative
+    overflow hidden
+
+    &::after
+      content ''
+      position absolute
+      bottom: -20px;
+      right: -20px;
+      width: 50%;
+      height: 80%;
+      background-image url('../images/tailormed-mark.svg')
+      background-size contain
+      background-repeat no-repeat
+      background-position bottom right
+      opacity 0.15
+      pointer-events none
+
+    .summary-field
+      display flex
+      flex-direction column
+      gap 6px
+      position relative
+      z-index 1
+      align-items flex-start
+
+        // 第一列（TRACKING NO.）的字體大小
+        &:nth-child(1)
+          .field-value
+            font-size 1.4rem
+
+      .field-label
+        font-size 0.75rem
+        font-weight 600
+        color base-white
+        text-transform uppercase
+        letter-spacing 0.08em
+
+      .field-value
+        font-size 1.4rem
+        font-weight 600
+        color base-white
+
+      .status-value-wrapper
+        display flex
+        align-items center
+        gap 10px
+
+      .status-inline
+        color primary-color
+        padding 5px 10px
+        background secondary-color
+        border-radius 5px
+
+      .status-icon-wrapper
+        position relative
+        display inline-flex
+        cursor pointer
+
+        &::after
+          content attr(data-tooltip)
+          position absolute
+          bottom 110%
+          left 50%
+          transform translateX(-50%)
+          padding 8px 12px
+          background rgba(0, 0, 0, 0.9)
+          color base-white
+          font-size 0.85rem
+          font-weight 500
+          white-space nowrap
+          border-radius 6px
+          opacity 0
+          pointer-events none
+          transition opacity 0.3s ease
+          z-index 10
+
+        &::before
+          content ''
+          position absolute
+          bottom 100%
+          left 50%
+          transform translateX(-50%)
+          width 0
+          height 0
+          border-left 6px solid transparent
+          border-right 6px solid transparent
+          border-top 6px solid rgba(0, 0, 0, 0.9)
+          opacity 0
+          pointer-events none
+          transition opacity 0.3s ease
+
+        &:hover::after,
+        &:hover::before
+          opacity 1
+
+      .status-icon
+        width 40px
+        height 40px
+        display block
+
+      // Tracking No. (第一個欄位)
+      &:nth-child(1)
+        .field-value
+          font-size 2.4rem
+
+      // Last Update (第三個欄位)
+      &:nth-child(3)
+        .field-value
+          font-size 0.8rem
+          font-weight 400
+
+        .status-badge
+          display inline-flex
+          align-items center
+          justify-content center
+          padding 10px 16px
+          border-radius 999px
+          font-size 0.85rem
+          font-weight 700
+          text-transform uppercase
+          letter-spacing 0.08em
+          background rgba(37, 99, 235, 0.1)
+          color accent-color
+
+          &.status-in-transit
+            background rgba(37, 99, 235, 0.12)
+            color accent-color
+
+          &.status-customs
+            background rgba(245, 158, 11, 0.12)
+            color #f59e0b
+
+          &.status-departed
+            background rgba(187, 39, 73, 0.12)
+            color accent-color
+
+          &.status-delivered
+            background rgba(187, 39, 73, 0.18)
+            color #9a1f3a
+
+          &.status-exception
+            background rgba(225, 29, 72, 0.12)
+            color #e11d48
+
+  .results-note
+    font-size 0.9rem
+    color neutral-gray
+    padding 12px 16px
+    background rgba(248, 250, 252, 0.9)
+    border 1px dashed rgba(12, 48, 88, 0.15)
+    border-radius 12px
+    text-align center
+
+  .results-mobile-cta
+    display none
+    letter-spacing 0.05em
+    text-transform uppercase
+    font-size 1rem
+    padding 0 22px
+    height 55px
+    border none
+    border-radius 10px
+    background primary-color
+    color base-white
+    cursor pointer
+    font-weight 700
+    transition transform 0.2s ease
+
+    .btn-text
+      font-size inherit
+      line-height 1
+
+    &:hover
+      transform translateY(-3px)
+      background darken(primary-color, 10%)
+
+    &:active
+      transform translateY(0)
+
+  .results-summary,
+  .results-list,
+  .results-empty
+    display none
+
+  // Timeline Content 樣式（基礎樣式，所有尺寸下都有效）
+  .timeline-content
+    display flex
+    flex-direction column
+    gap 2rem
+    margin-top 20px
+    
+    .timeline-title
+      font-size 1.75rem
+      font-weight 600
+      color primary-color
+      margin 0
+    
+    .timeline-description
+      font-size 0.95rem
+      color neutral-gray
+      margin 0
+    
+    // Timeline Visual 樣式已移至 timelineVisual.styl
+    // .timeline-visual, .timeline-track, .timeline-connector, .timeline-events 的樣式請參見 components/timelineVisual.styl
+    
+    .timeline-nodes-container
+        display flex
+        gap 2rem
+        flex-wrap wrap
+        justify-content space-around
+        position relative
+        z-index 2
+        
+        .timeline-node
+          display flex
+          flex-direction column
+          align-items center
+          text-align center
+          
+          .node-date
+            display inline-flex
+            align-items center
+            gap 4px
+            
+            .month,
+            .day
+              font-size 1.1rem
+              font-weight bold
+              color primary-color
+              white-space nowrap
+          
+          .node-icon
+            .node-circle
+              width 40px
+              height 40px
+              background primary-color
+              border-radius 50%
+              border 2px solid base-white
+              position relative
+              z-index 6
+              transition all 0.3s ease
+              
+              &::before
+                content ''
+                position absolute
+                top 50%
+                left 50%
+                transform translate(-50%, -50%)
+                width 24px
+                height 24px
+                background base-white
+                border-radius 50%
+                z-index 1
+              
+              &::after
+                content ''
+                position absolute
+                top 50%
+                left 50%
+                transform translate(-50%, -50%)
+                width 10px
+                height 10px
+                background-image url('../images/icon-check.svg')
+                background-size contain
+                background-repeat no-repeat
+                background-position center
+                z-index 2
+                filter brightness(0) saturate(100%) invert(20%) sepia(21%) saturate(1500%) hue-rotate(190deg) brightness(95%) contrast(100%)
+              
+              &:hover
+                transform scale(1.1)
+                cursor pointer
+                box-shadow 0 4px 12px rgba(20, 52, 99, 0.3) !important
+                
+                &::before
+                  background primary-color
+                
+                &::after
+                  filter brightness(0) invert(1)
+          
+          .node-info
+            display flex
+            flex-direction column
+            align-items center
+            
+            .node-status
+              font-size 0.9rem
+              font-weight 600
+              color primary-color
+              max-width 120px
+              word-wrap break-word
+              text-align center
+            
+            .node-time
+              font-size 0.8rem
+              font-weight 500
+              color neutral-gray
+              margin 0
+    
+    // Timeline Icon Legend 樣式已移至 timelineIconLegend.styl
+    // .timeline-icon-legend 的樣式請參見 components/timelineIconLegend.styl
+
+// Mobile Specific Styles
+@media (max-width: 768px)
+  .results-panel
+    width 100%
+    padding 24px 22px
+    gap 16px
+
+    .results-title
+      font-size 1.2rem
+
+    .results-description
+      font-size 0.9rem
+
+    .results-container
+      flex-direction column
+      gap 0
+
+    .results-highlight
+      flex 1
+      padding 18px 18px
+      background none
+      border none
+
+      .summary-grid
+        grid-template-columns 1fr
+        gap 14px
+
+        .summary-field
+          .field-value
+            font-size 1.4rem
+
+    .status-info
+      flex 1
+      background primary-color
+      padding 20px
+      margin-top 24px
+      box-shadow panel-shadow
+      border-radius 12px
+
+      .summary-field
+        .field-label
+          color base-white
+
+        .field-value
+          color base-white
+
+        .status-inline
+          color base-white
+          background secondary-color
+
+    .results-note
+      font-size 0.85rem
+      padding 12px 12px
+
+    .results-mobile-cta
+      display inline-flex
+      justify-content center
+      align-items center
+      font-size 1rem
+      width 100%
+      margin-top 12px
+
+// Laptop Specific Styles
+@media (max-width: 1024px)
+  .results-panel
+    padding 28px 28px
+    
+    .results-container
+      flex-direction column
+      gap 0
+      
+    .results-highlight
+      flex 1
+      
+      .summary-grid
+        grid-template-columns 1fr
+        
+    .status-info
+      flex 1
+      background primary-color
+      padding 20px
+      margin-top 24px
+      box-shadow panel-shadow
+      border-radius 12px
+      
+      .summary-field
+        .field-label
+          color base-white
+        
+        .field-value
+          color base-white
+        
+        .status-inline
+          color base-white
+          background secondary-color
+
+// Timeline Content 樣式（移到媒體查詢外）
+.results-panel
+  .timeline-content
+    display flex
+    flex-direction column
+    gap 2rem
+    margin-top 20px
+    
+    .timeline-title
+      font-size 1.75rem
+      font-weight 600
+      color primary-color
+      margin 0
+    
+    .timeline-description
+      font-size 0.95rem
+      color neutral-gray
+      margin 0
+    
+    // Timeline Visual 樣式已移至 timelineVisual.styl（此處為重複，已移除）
+    // 請參見 components/timelineVisual.styl
+    
+    .timeline-nodes-container
+        display flex
+        gap 2rem
+        flex-wrap wrap
+        justify-content space-around
+        position relative
+        z-index 2
+        
+        .timeline-node
+          display flex
+          flex-direction column
+          align-items center
+          text-align center
+          
+          .node-date
+            display inline-flex
+            align-items center
+            gap 4px
+            
+            .month,
+            .day
+              font-size 1.1rem
+              font-weight bold
+              color primary-color
+              white-space nowrap
+          
+          .node-icon
+            .node-circle
+              width 40px
+              height 40px
+              background primary-color
+              border-radius 50%
+              border 2px solid base-white
+              position relative
+              z-index 6
+              transition all 0.3s ease
+              
+              &::before
+                content ''
+                position absolute
+                top 50%
+                left 50%
+                transform translate(-50%, -50%)
+                width 24px
+                height 24px
+                background base-white
+                border-radius 50%
+                z-index 1
+              
+              &::after
+                content ''
+                position absolute
+                top 50%
+                left 50%
+                transform translate(-50%, -50%)
+                width 10px
+                height 10px
+                background-image url('../images/icon-check.svg')
+                background-size contain
+                background-repeat no-repeat
+                background-position center
+                z-index 2
+                filter brightness(0) saturate(100%) invert(20%) sepia(21%) saturate(1500%) hue-rotate(190deg) brightness(95%) contrast(100%)
+              
+              &:hover
+                transform scale(1.1)
+                cursor pointer
+                box-shadow 0 4px 12px rgba(20, 52, 99, 0.3) !important
+                
+                &::before
+                  background primary-color
+                
+                &::after
+                  filter brightness(0) invert(1)
+          
+          .node-info
+            display flex
+            flex-direction column
+            align-items center
+            
+            .node-status
+              font-size 0.9rem
+              font-weight 600
+              color primary-color
+              max-width 120px
+              word-wrap break-word
+              text-align center
+            
+            .node-time
+              font-size 0.8rem
+              font-weight 500
+              color neutral-gray
+              margin 0
+        
+        // 第2、3個節點（Processing 狀態）
+        .timeline-node:nth-child(2),
+        .timeline-node:nth-child(3)
+          .node-date .month,
+          .node-date .day
+            color accent-color
+          
+          .node-circle
+            background accent-color
+          
+          .node-circle:hover
+            transform scale(1.1)
+            cursor pointer
+            box-shadow 0 4px 12px rgba(187, 39, 73, 0.4) !important
+            
+            &::before
+              background accent-color
+            
+            &::after
+              filter brightness(0) invert(1)
+          
+          .node-info .node-status
+            color accent-color
+            position relative
+            overflow hidden
+            
+            &::before
+              content ''
+              position absolute
+              top 0
+              left -100%
+              width 100%
+              height 100%
+              background linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent)
+              animation gradientShine 2s infinite
+              pointer-events none
+              z-index 1
+              border-radius 2px
+        
+        // 第2個節點（卡車圖標）
+        .timeline-node:nth-child(2) .node-circle::after
+          content ''
+          position absolute
+          top 50%
+          left 50%
+          transform translate(-50%, -50%)
+          width 16px
+          height 13px
+          background-image url('../images/icon-truck.svg')
+          background-size contain
+          background-repeat no-repeat
+          background-position center
+          z-index 2
+          filter none
+        
+        // 第3個節點（In Transit - 飛機圖標飄動）
+        .timeline-node:nth-child(3) .node-circle::after
+          content ''
+          position absolute
+          top 50%
+          left 50%
+          transform translate(-50%, -50%)
+          width 16px
+          height 13px
+          background-image url('../images/icon-inTransit.svg')
+          background-size contain
+          background-repeat no-repeat
+          background-position center
+          z-index 2
+          filter none
+          animation floatY 2.2s ease-in-out infinite
+        
+        // 第4個節點（Pending 狀態）
+        .timeline-node:nth-child(4)
+          .node-date .month,
+          .node-date .day
+            color neutral-light
+            font-style italic
+          
+          .node-circle
+            background neutral-light
+            border 2px dashed neutral-light
+            transition none !important
+            
+            &::before
+              content ''
+              position absolute
+              top 50%
+              left 50%
+              transform translate(-50%, -50%)
+              width 28px
+              height 28px
+              background base-white
+              border-radius 50%
+              z-index 1
+            
+            &::after
+              display none
+            
+            &:hover
+              transform none !important
+              cursor default !important
+              box-shadow none !important
+              
+              &::before
+                background base-white
+              
+              &::after
+                display none
+          
+          .node-info .node-status
+            color neutral-light
+          
+          .node-info .node-time
+            color neutral-light
+        
+        // 第5個節點（Completed）
+        .timeline-node:nth-child(5)
+          .node-date .month,
+          .node-date .day
+            color primary-color
+          
+          .node-status
+            color #222
+          
+          .node-circle::before
+            background primary-color
+          
+          .node-circle::after
+            width 14px
+            height 14px
+            filter brightness(0) invert(1)
+          
+          .node-circle:hover
+            transform none !important
+            cursor default !important
+            box-shadow none !important
+            
+            &::before
+              background primary-color
+            
+            &::after
+              filter brightness(0) invert(1)
+        
+        // 第6個節點（Order Completion）
+        .timeline-node:nth-child(6)
+          .node-date .month,
+          .node-date .day
+            color primary-color
+          
+          .node-info .node-status
+            color #222
+          
+          .node-info .node-time
+            color neutral-gray
+          
+          .node-circle
+            width 58px
+            height 40px
+            border-radius 5px
+            overflow hidden
+            display flex
+            align-items center
+            justify-content center
+            
+            &::before
+              content ''
+              position absolute
+              top 0
+              left -100%
+              width 100%
+              height 100%
+              background linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent)
+              transform skewX(20deg)
+              animation orderCompletionShine 4s infinite ease-out
+              pointer-events none
+              z-index 1
+              border-radius 3px
+            
+            &::after
+              content ''
+              position absolute
+              top 50%
+              left 50%
+              transform translate(-50%, -50%)
+              width 38px
+              height 18px
+              background-image url('../images/tailormed-mark.svg')
+              background-size contain
+              background-repeat no-repeat
+              background-position center
+              z-index 2
+              filter none
+            
+            &:hover
+              transform none !important
+              cursor default !important
+              box-shadow none !important
+            
+            &:hover::after
+              filter none
+      
+      .timeline-events
+        position absolute
+        top 0
+        left 0
+        width 100%
+        height 100%
+    
+    // Timeline Icon Legend 樣式已移至 timelineIconLegend.styl（此處為重複，已移除）
+    // 請參見 components/timelineIconLegend.styl
+
+// Event Dry Ice Refilled 樣式
+.event-dryice-refilled
+  position absolute
+  display flex
+  flex-direction column
+  align-items center
+  gap 0
+  top 37%
+  left 44%
+  
+  &:nth-child(2)
+    top 37%
+    left 61%
+  
+  .event-circle
+    position relative
+    width 16px
+    height 16px
+    background secondary-color
+    border-radius 50%
+    border 1px solid base-white
+    z-index 3
+    transform translateY(-50%)
+    
+    &::before
+      content ''
+      position absolute
+      top 50%
+      left 50%
+      width 6px
+      height 6px
+      border-radius 50%
+      background base-white
+      transform translate(-50%, -50%)
+    
+    &::after
+      content ''
+      position absolute
+      top 16px
+      left 50%
+      transform translateX(-50%)
+      width 2px
+      height 80px
+      background secondary-color
+      z-index 2
+  
+  .event-tag
+    position relative
+    background secondary-color
+    color base-white
+    padding 4px 8px
+    border-radius 4px
+    font-size 0.7rem
+    font-weight normal
+    white-space normal
+    text-align center
+    box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
+    margin-top 70px
+    z-index 1
+    line-height 1.2
+    max-width 100px
+    display flex
+    align-items center
+    justify-content center
+    
+    .event-tag-text
+      display block
+    
+    .event-tag-icon
+      display none
+      width 24px
+      height 24px
+
+// 動畫定義
+@keyframes gradientShine
+  0%
+    left -100%
+    opacity 0
+  50%
+    opacity 1
+  100%
+    left 100%
+    opacity 0
+
+@keyframes floatY
+  0%
+    transform translate(-50%, -50%) translateY(0)
+  50%
+    transform translate(-50%, -50%) translateY(-4px)
+  100%
+    transform translate(-50%, -50%) translateY(0)
+
+@keyframes orderCompletionShine
+  0%
+    left -100%
+    opacity 0
+  10%
+    opacity 1
+  40%
+    opacity 1
+  50%
+    left 100%
+    opacity 0
+  100%
+    left 100%
+    opacity 0
+
+// 響應式設計
+@media (max-width: 768px)
+  .results-panel
+    .timeline-content
+      gap 1.5rem
+      
+      .timeline-title
+        font-size 1.2rem
+      
+      .timeline-description
+        font-size 0.9rem
+      
+      // Timeline Visual Mobile 樣式已移至 timelineVisual.styl
+      // 請參見 components/timelineVisual.styl 中的 @media (max-width: 768px) 區塊
+      
+      .timeline-nodes-container
+          flex-direction column
+          gap 1.5rem
+          position relative
+          z-index 2
+          
+          .timeline-node
+            flex-direction row
+            align-items center
+            text-align left
+            gap 0
+            width 100%
+            margin-bottom 1.5rem
+            
+            &:last-child
+              margin-bottom 0
+            
+            .node-date
+              flex-direction column
+              gap 2px
+              padding-bottom 12px
+              justify-content center
+              align-items center
+              width 12%
+              margin-right 2%
+              
+              .month
+                font-size 0.8rem
+                font-weight normal
+              
+              .day
+                font-size 1.4rem
+                line-height 8px
+            
+            .node-icon
+              width 17%
+              display flex
+              justify-content center
+              align-items center
+              flex-shrink 0
+              
+              .node-circle
+                width 38px
+                height 38px
+                
+                &::before
+                  width 24px
+                  height 24px
+              
+              // Completed 狀態的 node-circle 的 ::before 高度不同
+              .node-circle--completed
+                &::before
+                  height 36px
+            
+            .node-info
+              flex 1
+              align-items flex-start
+              margin-top 4px
+              margin-left 3%
+              
+              .node-status
+                font-size 0.9rem
+                max-width 100%
+                text-align left
+                letter-spacing -0.1px
+              
+              .node-time
+                font-size 0.8rem
+                margin-top -4px
+          
+          .timeline-node:nth-child(2) .node-date .day,
+          .timeline-node:nth-child(3) .node-date .day
+            color accent-color
+            font-size 1rem
+            letter-spacing -1.8px
+            margin-top 11px
+            font-style normal
+          
+          .timeline-node:nth-child(4) .node-date .month,
+          .timeline-node:nth-child(4) .node-date .day
+            color neutral-light
+            font-size 1rem
+            letter-spacing -1.8px
+            margin-top 6px
+            font-style italic
+          
+          .timeline-node:nth-child(6) .node-icon
+            width 58px
+            
+          .timeline-node:nth-child(6) .node-circle
+            width 58px
+            height 40px
+            
+            &::after
+              width 38px
+              height 18px
+      
+      // Timeline Icon Legend Mobile 樣式已移至 timelineIconLegend.styl
+      // 請參見 components/timelineIconLegend.styl 中的 @media (max-width: 768px) 區塊
+  
+  .event-dryice-refilled
+    position absolute
+    flex-direction row
+    align-items center
+    gap 12px
+    width fit-content
+    
+    &:nth-child(1)
+      top 48%
+      left 20.1%
+    
+    &:nth-child(2)
+      top 65%
+      left 20.1%
+    
+    .event-circle
+      transform none
+      flex-shrink 0
+      z-index 3
+      
+      &::after
+        content ''
+        position absolute
+        top 50%
+        left 16px
+        transform translateY(-50%)
+        width 60px
+        height 2px
+        background secondary-color
+        z-index 2
+    
+    .event-tag
+      margin-top 0
+      margin-left 58px
+      white-space nowrap
+      z-index 1
+      max-width none
+      width 24px
+      height 24px
+      padding 0
+      border-radius 0
+      background transparent
+      box-shadow none
+      
+      .event-tag-text
+        display none
+      
+      .event-tag-icon
+        display block
+        width 35px
+        height 35px
+        cursor pointer
+        position relative
+        
+        &::after
+          content 'Dry ice refilled'
+          position absolute
+          top auto
+          bottom 130%
+          left 50%
+          transform translateX(-50%)
+          padding 6px 10px
+          background rgba(0, 0, 0, 0.9)
+          color base-white
+          font-size 0.75rem
+          font-weight 500
+          white-space nowrap
+          border-radius 4px
+          opacity 0
+          pointer-events none
+          transition opacity 0.3s ease
+          z-index 10
+        
+        &::before
+          content ''
+          position absolute
+          top auto
+          bottom 127%
+          left 50%
+          transform translateX(-50%)
+          width 0
+          height 0
+          border-left 4px solid transparent
+          border-right 4px solid transparent
+          border-top 4px solid rgba(0, 0, 0, 0.9)
+          opacity 0
+          pointer-events none
+          transition opacity 0.3s ease
+        
+        &:hover::after,
+        &:hover::before
+          opacity 1
+
+// Mobile Extra Styles
+@media (max-width: 480px)
+  .results-panel
+    padding 24px 22px
+    gap 16px
+
+    .results-title
+      font-size 1.2rem
+
+
