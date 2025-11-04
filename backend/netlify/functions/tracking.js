@@ -59,18 +59,23 @@ function initConnections() {
     try {
       // 在 Netlify Function 環境中，優先使用同目錄下的 database 模組
       // 如果不存在，則嘗試使用相對路徑
+      const path = require('path');
+      const fs = require('fs');
+      
+      // 先檢查本地檔案是否存在
+      const localPath = path.join(__dirname, 'database', 'airtable.js');
+      const fallbackPath = path.resolve(__dirname, '../../../database/airtable.js');
+      
       let airtablePath;
-      try {
-        // 嘗試從 Function 目錄下的 database 載入（部署時已複製）
-        airtablePath = require.resolve('./database/airtable');
-      } catch (e) {
-        // 如果不存在，使用相對路徑（開發環境）
-        airtablePath = require('path').resolve(
-          __dirname,
-          '../../../database/airtable'
-        );
+      if (fs.existsSync(localPath)) {
+        airtablePath = localPath;
+        console.log('🔧 使用本地 Airtable 模組:', airtablePath);
+      } else if (fs.existsSync(fallbackPath)) {
+        airtablePath = fallbackPath;
+        console.log('🔧 使用備用 Airtable 模組:', airtablePath);
+      } else {
+        throw new Error(`Cannot find airtable module at ${localPath} or ${fallbackPath}`);
       }
-      console.log('🔧 嘗試載入 Airtable 模組:', airtablePath);
 
       // 清除緩存，強制重新載入模組（確保使用最新的環境變數）
       const resolvedPath = require.resolve(airtablePath);
@@ -235,19 +240,29 @@ exports.handler = async (event, context) => {
         try {
           // 在 Netlify Function 環境中，優先使用同目錄下的 database 模組
           // 如果不存在，則嘗試使用相對路徑
+          const path = require('path');
+          const fs = require('fs');
+          
+          // 先檢查本地檔案是否存在
+          const localPath = path.join(__dirname, 'database', 'airtable.js');
+          const fallbackPath = path.resolve(__dirname, '../../../database/airtable.js');
+          
           let airtablePath;
-          try {
-            // 嘗試從 Function 目錄下的 database 載入（部署時已複製）
-            airtablePath = require.resolve('./database/airtable');
-          } catch (e) {
-            // 如果不存在，使用相對路徑（開發環境）
-            airtablePath = require('path').resolve(
-              __dirname,
-              '../../../database/airtable'
-            );
+          if (fs.existsSync(localPath)) {
+            airtablePath = localPath;
+            console.log('🔧 使用本地 Airtable 模組:', airtablePath);
+          } else if (fs.existsSync(fallbackPath)) {
+            airtablePath = fallbackPath;
+            console.log('🔧 使用備用 Airtable 模組:', airtablePath);
+          } else {
+            throw new Error(`Cannot find airtable module at ${localPath} or ${fallbackPath}`);
           }
+          
           // 清除緩存，強制重新載入模組
-          delete require.cache[require.resolve(airtablePath)];
+          const resolvedPath = require.resolve(airtablePath);
+          if (require.cache[resolvedPath]) {
+            delete require.cache[resolvedPath];
+          }
           airtableConnection = require(airtablePath);
           console.log('✅ 已載入 Airtable 連接模組（在 handler 中）');
         } catch (error) {
