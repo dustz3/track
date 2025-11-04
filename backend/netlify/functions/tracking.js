@@ -140,9 +140,13 @@ exports.handler = async (event, context) => {
 
   const { httpMethod, path, queryStringParameters, body } = event;
 
+  // 記錄 path 以便調試
+  console.log('🔍 Event path:', path);
+  console.log('🔍 Event queryStringParameters:', queryStringParameters);
+
   try {
-    // 處理 /api/health 端點
-    if (path.includes('/api/health')) {
+    // 處理 /api/health 端點（支援重定向後的 path）
+    if (path.includes('/api/health') || path.includes('/health')) {
       return {
         statusCode: 200,
         headers,
@@ -157,10 +161,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // 處理 /api/tracking 和 /api/tracking-public 端點
+    // 處理 /api/tracking 和 /api/tracking-public 端點（支援重定向後的 path）
+    // Netlify 重定向後，path 可能是 /.netlify/functions/tracking
     if (
       path.includes('/api/tracking') ||
-      path.includes('/api/tracking-public')
+      path.includes('/api/tracking-public') ||
+      path.includes('/.netlify/functions/tracking') ||
+      path === '/tracking'
     ) {
       let orderNo, trackingNo;
 
