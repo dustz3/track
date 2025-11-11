@@ -6,9 +6,9 @@
     "build": "node compile.js"
   },
   "dependencies": {
-    "pug": "^3.0.2",
-    "stylus": "^0.59.0",
     "airtable": "^0.12.2",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "pug": "^3.0.2",
+    "stylus": "^0.59.0"
   }
 }

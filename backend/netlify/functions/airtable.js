@@ -173,6 +173,59 @@ async function findShipment(orderNo, trackingNo) {
       return defaultValue;
     };
 
+    // 處理 Origin/Destination 欄位（Lookup 可能回傳陣列）
+    const normalizeFieldValue = (value) => {
+      if (Array.isArray(value)) {
+        return value.find((item) => typeof item === 'string' && item.trim().length > 0) || '';
+      }
+      return typeof value === 'string' ? value : '';
+    };
+
+    const originDestinationRaw = normalizeFieldValue(
+      getFieldValue(['Origin/Destination', 'Origin Destination', 'Route'], '')
+    );
+
+    const parseOriginDestination = (rawValue) => {
+      if (!rawValue || typeof rawValue !== 'string') {
+        return { origin: '', destination: '', combined: '' };
+      }
+
+      // 支援多種箭頭符號或分隔符號
+      const normalized = rawValue
+        .replace(/->/g, '→')
+        .replace(/-/g, '→')
+        .replace(/→/g, '→');
+
+      if (normalized.includes('→')) {
+        const [originPart, destinationPart] = normalized.split('→').map((part) => part.trim());
+        return {
+          origin: originPart || '',
+          destination: destinationPart || '',
+          combined: originPart && destinationPart ? `${originPart} → ${destinationPart}` : normalized.trim(),
+        };
+      }
+
+      return {
+        origin: '',
+        destination: '',
+        combined: rawValue.trim(),
+      };
+    };
+
+    const originDestinationParsed = parseOriginDestination(originDestinationRaw);
+
+    const originValue =
+      originDestinationParsed.origin ||
+      normalizeFieldValue(getFieldValue(['Origin', 'origin'], ''));
+
+    const destinationValue =
+      originDestinationParsed.destination ||
+      normalizeFieldValue(getFieldValue(['Destination', 'destination'], ''));
+
+    const combinedOriginDestination =
+      originDestinationParsed.combined ||
+      (originValue && destinationValue ? `${originValue} → ${destinationValue}` : '');
+
     // 轉換為統一格式
     return {
       id: record.id,
@@ -185,27 +238,9 @@ async function findShipment(orderNo, trackingNo) {
         trackingNo
       ),
       status: getFieldValue(['Status', 'status'], 'pending'),
-      // 處理 Origin/Destination 欄位（格式：TPE → PVG）
-      origin: (() => {
-        const originDest = getFieldValue(
-          ['Origin/Destination', 'Origin', 'origin'],
-          ''
-        );
-        if (originDest && originDest.includes('→')) {
-          return originDest.split('→')[0].trim();
-        }
-        return getFieldValue(['Origin', 'origin'], '');
-      })(),
-      destination: (() => {
-        const originDest = getFieldValue(
-          ['Origin/Destination', 'Destination', 'destination'],
-          ''
-        );
-        if (originDest && originDest.includes('→')) {
-          return originDest.split('→')[1].trim();
-        }
-        return getFieldValue(['Destination', 'destination'], '');
-      })(),
+      originDestination: combinedOriginDestination,
+      origin: originValue,
+      destination: destinationValue,
       packageCount: getFieldValue(
         ['Package Count', 'PackageCount', 'Packages'],
         1

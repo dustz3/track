@@ -296,7 +296,47 @@ p
   flex-direction column
   align-items center
   gap 24px
-  margin-bottom 80px
+
+.system-description
+  padding 40px 0
+
+  .description-content
+    margin 0 auto
+    display flex
+    flex-direction column
+    text-align left
+
+  .description-title
+    font-size 1.2rem
+    font-weight 700
+    color rgba(12, 48, 88, 0.6)
+    letter-spacing 0.02em
+    margin-bottom 8px
+
+  .description-text-section
+    display flex
+    flex-direction column
+    gap 18px
+
+  .description-text
+    font-size 1rem
+    line-height 1.8
+    color rgba(12, 48, 88, 0.4)
+
+    strong
+      color rgba(12, 48, 88, 0.4)
+
+  @media (max-width: 768px)
+    padding 32px 0
+
+    .description-content
+      gap 20px
+
+    .description-title
+      font-size 1.4rem
+
+    .description-text
+      font-size 0.95rem
 
 @media (max-width: 768px)
   .hero-banner

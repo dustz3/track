@@ -1,3 +1,4 @@
+(function () {
 // TailorMed 貨件追蹤系統 - API 整合
 
 // API 設定（從 config.js 讀取，如果沒有則使用預設值）
@@ -27,12 +28,105 @@ function trackUsage(action, data) {
 }
 
 // DOM 元素
-const trackingForm = document.querySelector('.summary-form');
-const orderInput = document.querySelector('input[name="order"]');
-const jobInput = document.querySelector('input[name="job"]');
+const trackingForm = document.querySelector('.summary-form') || document.querySelector('#trackingForm');
+const orderInput = document.querySelector('#orderNo') || document.querySelector('input[name="order"]');
+const jobInput = document.querySelector('#trackingNo') || document.querySelector('input[name="job"]');
 const resultsPanel = document.querySelector('.results-panel');
 const lookupPanel = document.querySelector('.tracking-lookup-panel');
 const statusPanel = document.querySelector('.status-panel');
+const defaultResultsDescription = document.querySelector('.results-description')?.textContent || '';
+
+function getOrCreateResultsMessage() {
+  if (!resultsPanel) return null;
+  let messageBox = resultsPanel.querySelector('.results-message');
+  if (!messageBox) {
+    messageBox = document.createElement('div');
+    messageBox.className = 'results-message';
+    const container = resultsPanel.querySelector('.results-container');
+    if (container) {
+      resultsPanel.insertBefore(messageBox, container);
+    } else {
+      resultsPanel.appendChild(messageBox);
+    }
+  }
+  return messageBox;
+}
+
+function showResultsMessage(type, message) {
+  if (!resultsPanel) return;
+
+  resultsPanel.classList.remove('is-loading', 'is-error');
+  resultsPanel.classList.remove('is-hidden');
+  resultsPanel.classList.add('is-empty');
+  const messageBox = getOrCreateResultsMessage();
+  const container = resultsPanel.querySelector('.results-container');
+  const timelineContent = resultsPanel.querySelector('.timeline-content');
+  const description = resultsPanel.querySelector('.results-description');
+
+  if (type === 'loading') {
+    resultsPanel.classList.add('is-loading');
+  } else if (type === 'error') {
+    resultsPanel.classList.add('is-error');
+  }
+
+  if (messageBox) {
+    const illustration =
+      type === 'error'
+        ? `
+          <div class="results-message__illustration">
+            <img src="images/noData.svg" alt="No data found illustration">
+          </div>
+        `
+        : '';
+
+    messageBox.innerHTML = `
+      ${illustration}
+      <p>${message}</p>
+    `;
+    messageBox.style.display = 'block';
+  }
+
+  if (container) {
+    container.style.display = 'none';
+  }
+
+  if (timelineContent) {
+    timelineContent.style.display = 'none';
+  }
+
+  if (description && type !== 'success') {
+    description.textContent = message;
+  }
+}
+
+function clearResultsMessage() {
+  if (!resultsPanel) return;
+
+  resultsPanel.classList.remove('is-loading', 'is-error');
+  const messageBox = resultsPanel.querySelector('.results-message');
+  const container = resultsPanel.querySelector('.results-container');
+  const timelineContent = resultsPanel.querySelector('.timeline-content');
+  const description = resultsPanel.querySelector('.results-description');
+
+  if (messageBox) {
+    messageBox.innerHTML = '';
+    messageBox.style.display = 'none';
+  }
+
+  if (container) {
+    container.style.display = '';
+  }
+
+  if (timelineContent) {
+    timelineContent.style.display = '';
+  }
+
+  if (description) {
+    description.textContent = defaultResultsDescription;
+  }
+
+  resultsPanel.classList.remove('is-empty', 'is-hidden');
+}
 
 // 狀態訊息
 const STATUS_MESSAGES = {
@@ -125,12 +219,39 @@ async function fetchTrackingData(orderNo, trackingNo) {
 function renderShipmentInfo(shipmentData) {
   if (!shipmentData) return;
 
+  const timelineItems = Array.isArray(shipmentData.timeline)
+    ? shipmentData.timeline.slice()
+    : [];
+
+  const latestTimelineEntry = timelineItems
+    .slice()
+    .reverse()
+    .find((item) => item && !item.isEvent && (item.time || item.date));
+
+  const statusText = latestTimelineEntry?.title || shipmentData.status || 'Processing';
+  const timelineDate = latestTimelineEntry?.date || '';
+  const timelineTime = latestTimelineEntry?.time || '';
+  const combinedTimelineDateTime = [timelineDate, timelineTime].filter(Boolean).join(' ').trim();
+  const lastUpdateText =
+    combinedTimelineDateTime ||
+    shipmentData.lastUpdate ||
+    '—';
+
+
   // 更新基本資訊
   const summaryFields = {
     'Order No.': shipmentData.orderNo || '—',
-    'Invoice No.': shipmentData.invoiceNo || '—',
-    'MAWB': shipmentData.mawb || '—',
-    'Original/Destination': shipmentData.route || '—',
+    'Original/Destination': (() => {
+      if (shipmentData.originDestination && shipmentData.originDestination.trim()) {
+        return shipmentData.originDestination;
+      }
+      if (shipmentData.origin && shipmentData.destination) {
+        return `${shipmentData.origin} → ${shipmentData.destination}`;
+      }
+      return shipmentData.route || '—';
+    })(),
+    'Origin': 'hidden',
+    'Destination': 'hidden',
     'Package Count': shipmentData.packageCount || '—',
     'Weight': shipmentData.weight ? `${shipmentData.weight} KG` : '—',
     'ETA': shipmentData.eta || '—'
@@ -141,6 +262,9 @@ function renderShipmentInfo(shipmentData) {
   if (summaryGrid) {
     summaryGrid.innerHTML = '';
     Object.entries(summaryFields).forEach(([label, value]) => {
+      if (value === 'hidden') {
+        return;
+      }
       const field = document.createElement('div');
       field.className = 'summary-field';
       field.innerHTML = `
@@ -165,7 +289,7 @@ function renderShipmentInfo(shipmentData) {
       <div class="summary-field status-field">
         <span class="field-label">Status</span>
         <div class="status-value-wrapper">
-          <span class="field-value status-inline status-in-transit">${shipmentData.status || 'Processing'}</span>
+          <span class="field-value status-inline status-in-transit">${statusText}</span>
           ${hasDryIceEvent ? `
             <div class="status-icon-wrapper" data-tooltip="Dry Ice Refilled">
               <img class="status-icon" src="images/icon-dryice.svg" alt="Dry Ice Refilled">
@@ -175,7 +299,7 @@ function renderShipmentInfo(shipmentData) {
       </div>
       <div class="summary-field">
         <span class="field-label">Last Update</span>
-        <span class="field-value">${shipmentData.lastUpdate || '—'}</span>
+        <span class="field-value">${lastUpdateText}</span>
       </div>
     `;
   }
@@ -184,6 +308,11 @@ function renderShipmentInfo(shipmentData) {
 // 渲染時間軸
 function renderTimeline(timeline) {
   if (!timeline || timeline.length === 0) return;
+
+  const timelinePlaceholder = document.querySelector('.timeline-placeholder');
+  if (timelinePlaceholder) {
+    timelinePlaceholder.classList.add('is-hidden');
+  }
 
   // 計算進度百分比（排除 event 項目）
   const steps = timeline.filter(item => item.step !== null);
@@ -269,31 +398,21 @@ function renderTimeline(timeline) {
 
 // 顯示載入狀態
 function showLoading() {
-  const resultsContainer = document.querySelector('.results-container');
-  if (resultsContainer) {
-    resultsContainer.innerHTML = `
-      <div class="loading-message">
-        <p>${STATUS_MESSAGES.loading}</p>
-      </div>
-    `;
-  }
+  showResultsMessage('loading', STATUS_MESSAGES.loading);
 }
 
 // 顯示錯誤訊息
 function showError(message) {
-  const resultsContainer = document.querySelector('.results-container');
-  if (resultsContainer) {
-    resultsContainer.innerHTML = `
-      <div class="error-message">
-        <p>${message}</p>
-      </div>
-    `;
-  }
+  showResultsMessage('error', message);
 }
 
 // 處理表單提交
 async function handleFormSubmit(event) {
   event.preventDefault();
+
+  if (!orderInput || !jobInput) {
+    return;
+  }
 
   const orderNo = orderInput.value.trim().toUpperCase();
   const trackingNo = jobInput.value.trim().toUpperCase();
@@ -314,26 +433,20 @@ async function handleFormSubmit(event) {
 
   // 處理查詢次數限制
   if (result && result.error === 'rate_limit') {
-    showError(result.message);
+    showResultsMessage('error', result.message || STATUS_MESSAGES.error);
     return;
   }
 
   if (!result) {
-    showError(STATUS_MESSAGES.notFound);
+    showResultsMessage('error', STATUS_MESSAGES.notFound);
     return;
   }
+
+  clearResultsMessage();
 
   // 渲染資料
   renderShipmentInfo(result);
   renderTimeline(result.timeline);
-
-  // 顯示結果面板
-  if (resultsPanel) {
-    resultsPanel.style.display = 'block';
-  }
-  if (statusPanel) {
-    statusPanel.style.display = 'block';
-  }
 
   // 更新 URL (不刷新頁面)
   const url = new URL(window.location);
@@ -341,8 +454,15 @@ async function handleFormSubmit(event) {
   url.searchParams.set('tracking', trackingNo);
   window.history.pushState({}, '', url);
 
-  // 滾動到結果區域
-  resultsPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // 滾動到結果區域（額外保留 75px 空間）
+  if (resultsPanel) {
+    const panelTop =
+      resultsPanel.getBoundingClientRect().top + window.pageYOffset - 85;
+    window.scrollTo({
+      top: panelTop < 0 ? 0 : panelTop,
+      behavior: 'smooth',
+    });
+  }
 }
 
 // 從 URL 參數初始化
@@ -351,10 +471,12 @@ function initFromURL() {
   const orderNo = params.get('order');
   const trackingNo = params.get('tracking');
 
-  if (orderNo && trackingNo) {
+  if (orderInput && orderNo) {
     orderInput.value = orderNo;
+  }
+
+  if (jobInput && trackingNo) {
     jobInput.value = trackingNo;
-    handleFormSubmit(new Event('submit'));
   }
 }
 
@@ -381,4 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dispatchEvent(new Event('resize'));
   });
 });
+
+})();
 

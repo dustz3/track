@@ -25,10 +25,84 @@
     font-size 0.95rem
     color neutral-gray
 
+  .results-message
+    display none
+    width 100%
+    padding 24px
+    border-radius 12px
+    font-size 1rem
+    font-weight 500
+    color primary-color
+    text-align center
+    line-height 1.6
+
+  &.is-loading .results-container,
+  &.is-error .results-container
+    display none
+
+  &.is-loading .results-message
+    display block
+
+  &.is-error .results-message
+    display block
+    color accent-color
+
+  &.is-hidden
+    display none
+
+  &.is-empty
+    .results-container,
+    .timeline-content
+      display none
+
   .results-container
     display flex
     flex-direction row
     gap 24px
+
+  .summary-placeholder
+    display flex
+    flex-direction column
+    gap 16px
+    padding 28px 12px
+    border 1px dashed rgba(primary-color, 0.18)
+    border-radius 12px
+    background rgba(neutral-light, 0.35)
+    text-align left
+
+    &__title
+      font-size 1.4rem
+      font-weight 600
+      color primary-color
+
+    &__text
+      font-size 0.95rem
+      line-height 1.6
+      color #415a7a
+
+    &__accent
+      display inline-flex
+      align-items center
+      justify-content center
+      padding 4px 8px
+      margin 0 4px
+      border-radius 6px
+      background rgba(primary-color, 0.12)
+      color primary-color
+      font-size 0.85rem
+      font-weight 700
+      letter-spacing 0.02em
+
+    &__list
+      margin 8px 0 0
+      padding-left 20px
+      font-size 0.9rem
+      line-height 1.5
+      color #4b5f7a
+      list-style disc
+
+      li
+        margin-bottom 6px
 
   .results-highlight
     flex 6
@@ -69,6 +143,25 @@
     gap 20px
     position relative
     overflow hidden
+
+    .status-placeholder
+      display flex
+      flex-direction column
+      gap 12px
+      padding 16px
+      background rgba(255, 255, 255, 0.08)
+      border 1px dashed rgba(255, 255, 255, 0.2)
+      border-radius 12px
+      color base-white
+
+      &__title
+        font-size 1.2rem
+        font-weight 600
+
+      &__text
+        font-size 0.95rem
+        line-height 1.6
+        color rgba(255, 255, 255, 0.85)
 
     &::after
       content ''
@@ -268,6 +361,22 @@
       font-size 0.95rem
       color neutral-gray
       margin 0
+
+    .timeline-placeholder
+      margin-top 20px
+      padding 18px 20px
+      border-radius 12px
+      border 1px dashed rgba(primary-color, 0.18)
+      background rgba(neutral-light, 0.3)
+
+      &__text
+        margin 0
+        font-size 0.9rem
+        line-height 1.5
+        color #3f5872
+
+      &.is-hidden
+        display none
     
     // Timeline Visual 樣式已移至 timelineVisual.styl
     // .timeline-visual, .timeline-track, .timeline-connector, .timeline-events 的樣式請參見 components/timelineVisual.styl
@@ -377,7 +486,9 @@
     gap 16px
 
     .results-title
-      font-size 1.2rem
+      font-size 1.5rem
+      font-weight 600
+      color prColor
 
     .results-description
       font-size 0.9rem
@@ -462,8 +573,8 @@
           color base-white
         
         .status-inline
-          color base-white
-          background secondary-color
+          color primary-color
+          background #97d3df
 
 // Timeline Content 樣式（移到媒體查詢外）
 .results-panel
@@ -907,8 +1018,8 @@
       gap 1.5rem
       
       .timeline-title
-        font-size 1.2rem
-      
+        font-size 1.75rem
+
       .timeline-description
         font-size 0.9rem
       
@@ -1109,12 +1220,3 @@
           opacity 1
 
 // Mobile Extra Styles
-@media (max-width: 480px)
-  .results-panel
-    padding 24px 22px
-    gap 16px
-
-    .results-title
-      font-size 1.2rem
-
-
