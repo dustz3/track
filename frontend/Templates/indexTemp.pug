@@ -15,6 +15,7 @@ html(lang="zh-TW")
       .container
         .brand
           img.brand-logo(src="./images/logo.png", alt="TailorMed")
+          img.brand-logo.brand-logo--mobile(src="./images/TM-Logo-Square.png", alt="TailorMed")
         a.header-btn(href="https://www.tailormed-intl.com") Back Home
 
     section.hero-banner
@@ -63,7 +64,9 @@ html(lang="zh-TW")
                 span.field-value GEXVC2YF
               .summary-field.status-field
                 span.field-label Status
-                span.field-value.status-inline.status-in-transit In Transit
+                .status-value-wrapper
+                  span.field-value.status-inline.status-in-transit In Transit
+                  span.status-dryice-icon(data-tooltip="Dry Ice Refilled")
               .summary-field
                 span.field-label Last Update
                 span.field-value 2025-11-11 14:35 GMT+8

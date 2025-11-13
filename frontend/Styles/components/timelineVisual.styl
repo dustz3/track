@@ -13,6 +13,9 @@
     .timeline-connector
       &::after
         background prColor
+    .timeline-track
+      &::after
+        background prColor
 
   // Timeline Track (桌面版隱藏)
   .timeline-track
@@ -23,7 +26,7 @@
     position absolute
     left 0
     right 0
-    width 89%
+    width 88%
     top 0
     height 100%
     z-index 0
@@ -125,7 +128,6 @@
       padding 15px 0
       position relative
       width 100%
-      margin 0 0 20px
       
       // Timeline Track (移動版顯示)
       .timeline-track
@@ -142,9 +144,9 @@
           content ''
           position absolute
           left 21.3%
-          top 9%
+          top 6%
           width 8px
-          height 83%
+          height 87%
           background linear-gradient(to bottom, neutral-light 60%)
           z-index 0
           border-radius 15px
@@ -153,14 +155,31 @@
           content ''
           position absolute
           left 21.3%
-          top 9%
+          top 6%
           width 8px
-          height 10%
-          background linear-gradient(to bottom, primary-color, accent-color)
+          height var(--timeline-progress-height, 0%)
+          max-height 88%
+          background linear-gradient(to bottom, #143463 70%, #bb2749 100%)
           border-radius 15px
           z-index 1
       
-      // Timeline Connector (移動版隱藏)
+      &.timeline-visual--order-final
+        .timeline-track
+          &::after
+            background prColor
+
+      .timeline-connector
+        display none
+
+.timeline-preview
+  .timeline-visual.timeline-visual--order-final
+    .timeline-track
+      &::after
+        background prColor
+
+@media (max-width: 768px)
+  .timeline-preview
+    .timeline-visual
       .timeline-connector
         display none
 

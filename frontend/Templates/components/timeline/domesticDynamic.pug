@@ -1,11 +1,11 @@
 //- Domestic (Dynamic) Timeline Preview
 .timeline-preview.timeline-preview--domestic(data-variant="domestic-dynamic")
-  .timeline-visual.timeline-visual--domestic
+  .timeline-visual.timeline-visual--domestic(style="--timeline-progress-width: 40%; --timeline-progress-height: 40%")
     .timeline-track
-    .timeline-connector(style="--timeline-progress-width: 40%")
+    .timeline-connector
     .timeline-nodes-container
       .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="1")
-        .node-date
+        .node-date(data-month="Nov", data-day="10")
           span.month Nov
           span.day 10
         .node-icon
@@ -14,7 +14,7 @@
           .node-status Order Created
           p.node-time 09:00
       .timeline-node.timeline-node--status-2.timeline-node--processing(data-status-code="2", data-step="2")
-        .node-date
+        .node-date(data-month="TBD", data-day="")
           span.month TBD
           span.day
         .node-icon
@@ -23,7 +23,7 @@
           .node-status Shipment Collected
           p.node-time Processing...
       .timeline-node.timeline-node--status-4.timeline-node--scheduled(data-status-code="4", data-step="3")
-        .node-date
+        .node-date(data-month="TBD", data-day="")
           span.month TBD
           span.day
         .node-icon
@@ -32,7 +32,7 @@
           .node-status In Transit
           p.node-time --:--
       .timeline-node.timeline-node--status-4.timeline-node--scheduled(data-status-code="4", data-step="4")
-        .node-date
+        .node-date(data-month="TBD", data-day="")
           span.month TBD
           span.day
         .node-icon

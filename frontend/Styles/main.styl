@@ -173,8 +173,16 @@ p
 
 .brand-logo
   display block
-  max-height 46px
   width 215px
+
+.brand-logo--mobile
+  display none
+  width 100px
+  height 100px
+
+.site-header .brand
+  display flex
+  align-items center
 
 .site-nav
   display flex
@@ -337,6 +345,12 @@ p
       .timeline-preview
         padding 16px 16px 32px
 
+  +respond(mobile)
+    .timeline-previews-gallery
+      .timeline-preview-item--international
+        .timeline-preview
+          padding 16px
+
   +respond(laptop)
     .timeline-previews-gallery
       grid-template-columns repeat(2, minmax(0, 1fr))
@@ -411,6 +425,16 @@ p
     .hero-text
       width 100%
       padding 0 5%
+
+  .site-header
+    .container
+      justify-content center
+    .brand-logo
+      display none
+    .brand-logo--mobile
+      display block
+    .header-btn
+      display none
 
       .hero-title
         font-size 2.1rem

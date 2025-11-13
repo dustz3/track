@@ -823,7 +823,7 @@
         hasFinalStatus
       );
     }
-    if (timelineConnector) {
+    if (timelineVisual || timelineConnector) {
       const lastActiveIndex = processedSteps.reduce((acc, step, idx) => {
         if (step.statusCode !== TIMELINE_STATUS_CODES.SCHEDULED) {
           return idx;
@@ -832,9 +832,11 @@
       }, -1);
 
       let connectorWidthPercent = 0;
+      let mobileTrackHeightPercent = 0;
 
       if (isDomestic && processedSteps.length === 4) {
         const domesticPreset = [0, 40, 70, 99];
+        const domesticMobilePreset = [13, 38, 66, 88];
         const executedStatusCodes = new Set([
           TIMELINE_STATUS_CODES.EXECUTED,
           TIMELINE_STATUS_CODES.ORDER_COMPLETED,
@@ -853,8 +855,10 @@
           Math.min(lastExecutedIndex + 1, domesticPreset.length - 1)
         );
         connectorWidthPercent = domesticPreset[stageIndex];
+        mobileTrackHeightPercent = domesticMobilePreset[stageIndex];
       } else if (isInternational && processedSteps.length === 7) {
         const internationalPreset = [5, 21, 38, 53, 68, 85, 97];
+        const internationalMobilePreset = [5, 21, 34, 48, 63, 78, 88];
         const executedStatusCodes = new Set([
           TIMELINE_STATUS_CODES.EXECUTED,
           TIMELINE_STATUS_CODES.INTERNATIONAL_IN_TRANSIT,
@@ -872,6 +876,7 @@
           Math.min(lastExecutedIndex + 1, internationalPreset.length - 1)
         );
         connectorWidthPercent = internationalPreset[stageIndex];
+        mobileTrackHeightPercent = internationalMobilePreset[stageIndex];
       } else {
         const connectorRatio =
           processedSteps.length === 0
@@ -880,12 +885,32 @@
             ? 0
             : Math.min(1, (lastActiveIndex + 1) / processedSteps.length);
         connectorWidthPercent = Math.round(connectorRatio * 100);
+        mobileTrackHeightPercent = connectorWidthPercent;
       }
 
-      timelineConnector.style.setProperty(
-        '--timeline-progress-width',
-        `${connectorWidthPercent}%`
-      );
+      if (timelineConnector) {
+        timelineConnector.style.setProperty(
+          '--timeline-progress-width',
+          `${connectorWidthPercent}%`
+        );
+      }
+      if (timelineVisual) {
+        timelineVisual.style.setProperty(
+          '--timeline-progress-width',
+          `${connectorWidthPercent}%`
+        );
+        timelineVisual.style.setProperty(
+          '--timeline-progress-height',
+          `${mobileTrackHeightPercent}%`
+        );
+      }
+      const timelineTrack = timelineVisual?.querySelector('.timeline-track');
+      if (timelineTrack) {
+        timelineTrack.style.setProperty(
+          '--timeline-progress-height',
+          `${mobileTrackHeightPercent}%`
+        );
+      }
     }
 
     // 更新 timeline nodes
@@ -927,7 +952,7 @@
         const displayDay = item.dayOverride ?? day;
         const displayTime = item.time || '';
         node.innerHTML = `
-        <div class="node-date">
+        <div class="node-date" data-month="${displayMonth}" data-day="${displayDay}">
           <span class="month">${displayMonth}</span>
           <span class="day">${displayDay}</span>
         </div>

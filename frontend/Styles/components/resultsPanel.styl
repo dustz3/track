@@ -60,6 +60,12 @@
           border-radius 999px
           opacity 0.25
           z-index 0
+        @media (max-width: 768px)
+          &::after
+            width 70%
+        @media (max-width: 480px)
+          &::after
+            width 70%
         img
           position relative
           z-index 1
@@ -413,7 +419,7 @@
     display flex
     flex-direction column
     gap 2rem
-    margin-top 20px
+            margin-top 15px
     
     .timeline-title
       font-size 1.75rem
@@ -447,7 +453,7 @@
  
      .timeline-nodes-container
        display flex
-       gap 2rem
+       gap 1.2rem
        flex-wrap wrap
        justify-content space-between
        position relative
@@ -458,6 +464,7 @@
          flex-direction column
          align-items center
          text-align center
+         width 120px
  
          .node-date
            display inline-flex
@@ -530,7 +537,7 @@
            align-items center
  
            .node-status
-             font-size 0.9rem
+             font-size 0.85rem
              font-weight 600
              color primary-color
              max-width 120px
@@ -719,6 +726,10 @@
         width 100%
         height 100%
     
+    &.timeline-preview--international:not(.timeline-preview--international-completed)
+      .timeline-events
+        height 99%
+    
     // Timeline Icon Legend 樣式已移至 timelineIconLegend.styl
     // .timeline-icon-legend 的樣式請參見 components/timelineIconLegend.styl
 
@@ -729,8 +740,8 @@
   flex-direction column
   align-items center
   gap 0
-  top 39%
-  left 52%
+  top var(--dryice-event1-top, 39%)
+  left var(--dryice-event1-left, 52%)
   
   &:nth-child(2)
     top 39%
@@ -862,7 +873,7 @@
       
       .timeline-nodes-container
           flex-direction column
-          gap 1.5rem
+          gap 1.2rem
           position relative
           z-index 2
           
@@ -938,6 +949,33 @@
             margin-top 11px
             font-style normal
           
+          .timeline-node--status-2 .node-date,
+          .timeline-node--status-3 .node-date,
+          .timeline-node--status-4 .node-date
+            position relative
+            padding-bottom 12px
+            
+            &::after
+              content attr(data-month)
+              display block
+              text-align center
+              font-weight 600
+              font-size 1rem
+            
+            .month
+              display none
+            
+            .day
+              display none
+          
+          .timeline-node--status-2 .node-date::after,
+          .timeline-node--status-3 .node-date::after
+            color accent-color
+          
+          .timeline-node--status-4 .node-date::after
+            color neutral-light
+            font-style italic
+          
           .timeline-node--status-4 .node-date .month,
           .timeline-node--status-4 .node-date .day
             color neutral-light
@@ -960,20 +998,32 @@
       // Timeline Icon Legend Mobile 樣式已移至 timelineIconLegend.styl
       // 請參見 components/timelineIconLegend.styl 中的 @media (max-width: 768px) 區塊
   
+@media (max-width: 768px)
+  .timeline-preview--international .timeline-visual,
+  .results-panel .timeline-content .timeline-visual.timeline-visual--imex
+    &.timeline-visual--order-final
+      .timeline-events
+        height 100%
+    &:not(.timeline-visual--order-final)
+      .timeline-events
+        height 99%
+    --dryice-event1-top 55%
+    --dryice-event1-left 20%
   .event-dryice-refilled
     position absolute
+    display flex
     flex-direction row
     align-items center
     gap 12px
     width fit-content
     
     &:nth-child(1)
-      top 48%
-      left 20.1%
+      top 55%
+      left 20%
     
     &:nth-child(2)
-      top 65%
-      left 20.1%
+      top 70.5%
+      left 20%
     
     .event-circle
       transform none
@@ -1053,13 +1103,56 @@
         &:hover::before
           opacity 1
 
+@media (max-width: 768px)
+  .timeline-preview
+    .timeline-node--status-2 .node-date,
+    .timeline-node--status-3 .node-date,
+    .timeline-node--status-4 .node-date
+      &::after
+        content attr(data-month)
+        display block
+        text-align center
+        font-weight 600
+        font-size 1rem
+        margin-top 15px
+      .month
+        display none
+      .day
+        display none
+    .timeline-node--status-2 .node-date::after,
+    .timeline-node--status-3 .node-date::after
+      color accent-color
+    .timeline-node--status-4 .node-date::after
+      color neutral-light
+      font-style italic
+
+@media (max-width: 768px)
+  .results-panel
+    .results-highlight
+      .summary-grid
+        grid-template-columns repeat(1, 1fr)
+
+@media (max-width: 768px)
+  .results-panel
+    .results-container
+      flex-direction column
+
+@media (max-width: 480px)
+  .results-panel
+    padding 28px 24px
+  .event-dryice-refilled[data-step='4']
+    top 54.5%
+    left 20%
+  .event-dryice-refilled[data-step='5']
+    top 70%
+    left 20%
 // Mobile Extra Styles
 
 // Shared timeline preview styling outside results panel
 .timeline-preview
   .timeline-nodes-container
     display flex
-    gap 2rem
+    gap 1.2rem
     flex-wrap wrap
     justify-content space-between
     position relative
@@ -1075,6 +1168,7 @@
         display inline-flex
         align-items center
         gap 4px
+        position relative
 
         .month,
         .day
@@ -1124,3 +1218,44 @@
             background-position center
             z-index 2
             filter brightness(0) saturate(100%) invert(20%) sepia(21%) saturate(1500%) hue-rotate(190deg) brightness(95%) contrast(100%)
+      
+      &.timeline-node--status-6
+        .node-icon
+          .node-circle
+            width 58px
+            height 40px
+            border-radius 5px
+            overflow hidden
+            display flex
+            align-items center
+            justify-content center
+            border 0
+            &::before
+              content ''
+              position absolute
+              top 0
+              left -100%
+              width 100%
+              height 100%
+              background linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent)
+              transform skewX(20deg)
+              animation orderCompletionShine 4s infinite ease-out
+              pointer-events none
+              z-index 1
+              border-radius 3px
+            &::after
+              content ''
+              position absolute
+              top 50%
+              left 50%
+              transform translate(-50%, -50%)
+              width 38px
+              height 18px
+              background-image url('../images/tailormed-mark.svg')
+              background-size contain
+              background-repeat no-repeat
+              background-position center
+              z-index 2
+              filter none
+            transition none
+            pointer-events none

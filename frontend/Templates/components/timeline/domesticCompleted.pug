@@ -1,11 +1,11 @@
 //- Domestic (Completed) Timeline Preview
 .timeline-preview.timeline-preview--domestic-completed(data-variant="domestic-completed")
-  .timeline-visual.timeline-visual--domestic.timeline-visual--order-final
+  .timeline-visual.timeline-visual--domestic.timeline-visual--order-final(style="--timeline-progress-width: 99%; --timeline-progress-height: 90%")
     .timeline-track
-    .timeline-connector(style="--timeline-progress-width: 99%")
+    .timeline-connector
     .timeline-nodes-container
       .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="1")
-        .node-date
+        .node-date(data-month="Nov", data-day="10")
           span.month Nov
           span.day 10
         .node-icon
@@ -14,7 +14,7 @@
           .node-status Order Created
           p.node-time 09:00
       .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="2")
-        .node-date
+        .node-date(data-month="Nov", data-day="10")
           span.month Nov
           span.day 10
         .node-icon
@@ -23,7 +23,7 @@
           .node-status Shipment Collected
           p.node-time 09:20
       .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="3")
-        .node-date
+        .node-date(data-month="Nov", data-day="10")
           span.month Nov
           span.day 10
         .node-icon
@@ -32,7 +32,7 @@
           .node-status In Transit
           p.node-time 12:15
       .timeline-node.timeline-node--status-6.timeline-node--order-final(data-status-code="6", data-step="4")
-        .node-date
+        .node-date(data-month="Nov", data-day="11")
           span.month Nov
           span.day 11
         .node-icon
