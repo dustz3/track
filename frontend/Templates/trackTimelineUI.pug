@@ -1,0 +1,370 @@
+doctype html
+html(lang="zh-TW")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    title TailorMed｜貨件追蹤系統 - Test Version
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap", rel="stylesheet")
+    link(rel="stylesheet", href="./css/main.css")
+    script(src="./js/config.js")
+    script(src="./js/app.js", defer)
+  body
+    header.site-header
+      .container
+        .brand
+          img.brand-logo(src="./images/logo.png", alt="TailorMed")
+          img.brand-logo.brand-logo--mobile(src="./images/TM-Logo-Square.png", alt="TailorMed")
+        a.header-btn(href="https://www.tailormed-intl.com") Back Home
+
+    section.hero-banner
+      .hero-overlay
+      .container
+        .hero-content
+          .hero-text
+            h1.hero-title Track Your TailorMed™ Shipments Anytime
+            p.hero-subtitle.hero-subtitle--desktop Use your order number and job ID to review the most recent shipment status available from TailorMed.
+            p.hero-subtitle.hero-subtitle--mobile Use your order number and job ID to review the most recent shipment status available from TailorMed.
+
+    section.hero-summary
+      //- 1. Shipment Tracking Lookup
+      //- include components/lookupPanel.pug
+
+      //- 2. Latest shipment updates（動態區塊）
+      include components/resultsPanel.pug
+
+      //- 3. 靜態範例區塊，方便設計調整
+      section(static-preview).static-preview
+        //- h3.static-preview__title 樣式預覽：查詢結果區塊
+        //- p.static-preview__note （此區僅供排版使用，上線時請移除或關閉）
+        .results-panel.results-panel--static.is-active
+          h2.results-title Latest Shipment Updates
+          .results-container
+            .results-highlight
+              .summary-grid
+                .summary-field
+                  span.field-label Order No.
+                  span.field-value TM111682
+                .summary-field
+                  span.field-label Original/Destination
+                  span.field-value TPE → SFO
+                .summary-field
+                  span.field-label Package Count
+                  span.field-value 3
+                .summary-field
+                  span.field-label Weight
+                  span.field-value 24 KG
+                .summary-field
+                  span.field-label ETA
+                  span.field-value 12/11/2025
+            .status-info
+              .summary-field
+                span.field-label Tracking No.
+                span.field-value GEXVC2YF
+              .summary-field.status-field
+                span.field-label Status
+                .status-value-wrapper
+                  span.field-value.status-inline.status-in-transit In Transit
+                  span.status-dryice-icon(data-tooltip="Dry Ice Refilled")
+              .summary-field
+                span.field-label Last Update
+                span.field-value 2025-11-11 14:35 GMT+8
+          .timeline-content
+            h3.timeline-title Shipment History
+            p.timeline-description Track your shipment through each milestone
+            h4.timeline-preview-item__title(style="color: var(--prColor);") International｜In Progress
+            .timeline-visual.timeline-visual--imex.timeline-visual--static-demo(style="--timeline-progress-width: 85%; --timeline-progress-height: 78%")
+              .timeline-track
+              .timeline-connector
+              .timeline-nodes-container
+                .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="1")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Order Created
+                    p.node-time 07:50
+                .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="2")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Shipment Collected
+                    p.node-time 10:25
+                .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="3")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Origin Customs Process
+                    p.node-time 12:05
+                .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="4")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status In Transit
+                    p.node-time 16:40
+                .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="5")
+                  .node-date(data-month="Nov", data-day="06")
+                    span.month Nov
+                    span.separator 
+                    span.day 06
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Destination Customs Process
+                    p.node-time 08:10
+                .timeline-node.timeline-node--status-2.timeline-node--processing(data-status-code="2", data-step="6")
+                  .node-date(data-month="TBD", data-day="")
+                    span.month TBD
+                    span.separator 
+                    span.day
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Out for Delivery
+                    p.node-time Processing...
+                .timeline-node.timeline-node--status-4.timeline-node--scheduled(data-status-code="4", data-step="7")
+                  .node-date(data-month="TBD", data-day="")
+                    span.month TBD
+                    span.separator 
+                    span.day
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Shipment Delivered
+                    p.node-time --:--
+              .timeline-events
+                .event-dryice-refilled(data-step="4")
+                  .event-circle
+                  .event-tag
+                    span.event-tag-text Dry Ice Refilled<br/>(Terminal)
+                    img.event-tag-icon(src="./images/icon-dryice.svg", alt="Dry Ice Refilled (Terminal)")
+                .event-dryice-refilled(data-step="5")
+                  .event-circle
+                  .event-tag
+                    span.event-tag-text Dry Ice Refilled
+                    img.event-tag-icon(src="./images/icon-dryice.svg", alt="Dry Ice Refilled")
+            h4.timeline-preview-item__title(style="color: var(--prColor); margin-top: 32px;") International｜Shipment Delivered
+            .timeline-visual.timeline-visual--imex.timeline-visual--static-demo.timeline-visual--order-final(style="--timeline-progress-width: 100%; --timeline-progress-height: 88%;")
+              .timeline-track
+              .timeline-connector
+              .timeline-nodes-container
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="1")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Order Created
+                    p.node-time 07:50
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="2")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Shipment Collected
+                    p.node-time 10:25
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="3")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Origin Customs Process
+                    p.node-time 12:05
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="4")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status In Transit
+                    p.node-time 16:40
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="5")
+                  .node-date(data-month="Nov", data-day="06")
+                    span.month Nov
+                    span.separator 
+                    span.day 06
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Destination Customs Process
+                    p.node-time 08:10
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="6")
+                  .node-date(data-month="Nov", data-day="06")
+                    span.month Nov
+                    span.separator 
+                    span.day 06
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Out for Delivery
+                    p.node-time 12:45
+                .timeline-node.timeline-node--status-6.timeline-node--order-final(data-status-code="6", data-step="7")
+                  .node-date(data-month="Nov", data-day="07")
+                    span.month Nov
+                    span.separator 
+                    span.day 07
+                  .node-icon
+                    .node-circle.node-circle--order-final
+                  .node-info
+                    .node-status Shipment Delivered
+                    p.node-time 18:15
+              .timeline-events
+            h4.timeline-preview-item__title(style="color: var(--prColor); margin-top: 32px;") Domestic｜In Progress
+            .timeline-visual.timeline-visual--domestic.timeline-visual--static-demo(style="--timeline-progress-width: 40%; --timeline-progress-height: 42%;")
+              .timeline-track
+              .timeline-connector
+              .timeline-nodes-container
+                .timeline-node.timeline-node--status-1.timeline-node--executed(data-status-code="1", data-step="1")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Order Created
+                    p.node-time 09:15
+                .timeline-node.timeline-node--status-2.timeline-node--processing(data-status-code="2", data-step="2")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Shipment Collected
+                    p.node-time Processing...
+                .timeline-node.timeline-node--status-4.timeline-node--scheduled(data-status-code="4", data-step="3")
+                  .node-date(data-month="TBD", data-day="")
+                    span.month TBD
+                    span.separator 
+                    span.day
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Out for Delivery
+                    p.node-time --:--
+                .timeline-node.timeline-node--status-4.timeline-node--scheduled(data-status-code="4", data-step="4")
+                  .node-date(data-month="TBD", data-day="")
+                    span.month TBD
+                    span.separator 
+                    span.day
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Shipment Delivered
+                    p.node-time --:--
+              .timeline-events
+            h4.timeline-preview-item__title(style="color: var(--prColor); margin-top: 32px;") Domestic｜Shipment Delivered
+            .timeline-visual.timeline-visual--domestic.timeline-visual--static-demo.timeline-visual--order-final(style="--timeline-progress-width: 100%; --timeline-progress-height: 88%;")
+              .timeline-track
+              .timeline-connector
+              .timeline-nodes-container
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="1")
+                  .node-date(data-month="Nov", data-day="05")
+                    span.month Nov
+                    span.separator 
+                    span.day 05
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Order Created
+                    p.node-time 09:30
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="2")
+                  .node-date(data-month="Nov", data-day="06")
+                    span.month Nov
+                    span.separator 
+                    span.day 06
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Shipment Collected
+                    p.node-time 11:00
+                .timeline-node.timeline-node--status-5.timeline-node--order-completed(data-status-code="5", data-step="3")
+                  .node-date(data-month="Nov", data-day="07")
+                    span.month Nov
+                    span.separator 
+                    span.day 07
+                  .node-icon
+                    .node-circle
+                  .node-info
+                    .node-status Out for Delivery
+                    p.node-time --:--
+                .timeline-node.timeline-node--status-6.timeline-node--order-final(data-status-code="6", data-step="4")
+                  .node-date(data-month="Nov", data-day="08")
+                    span.month Nov
+                    span.separator 
+                    span.day 08
+                  .node-icon
+                    .node-circle.node-circle--order-final
+                  .node-info
+                    .node-status Shipment Delivered
+                    p.node-time 15:45
+              .timeline-events
+            //- .timeline-previews-gallery
+              .timeline-preview-item.timeline-preview-item--international
+                h4.timeline-preview-item__title International｜In Progress
+                include components/timeline/internationalInProgress.pug
+              .timeline-preview-item.timeline-preview-item--international
+                h4.timeline-preview-item__title International｜Shipment Delivered
+                include components/timeline/internationalCompleted.pug
+              .timeline-preview-item
+                h4.timeline-preview-item__title Domestic｜In Progress
+                include components/timeline/domesticDynamic.pug
+              .timeline-preview-item
+                h4.timeline-preview-item__title Domestic｜Shipment Delivered
+                include components/timeline/domesticCompleted.pug
+              .timeline-preview-item.timeline-preview-item--dev
+                h4.timeline-preview-item__title Shipment Node Status Preview
+                include components/timeline/nodePreview.pug
+            include components/timelineIconLegend.pug
+          p.results-note This information is NOT updated in real-time. For the most current status, please refresh this page or contact our customer service team.
+
+      section.system-description
+        .container
+          .description-content
+            h3.description-title TailorMed Shipment Tracking Notice｜Cold Chain Dedicated Service
+              
+            .description-text-section
+              p.description-text
+                | This tracking system is exclusively provided by TailorMed for authorized clients to access current shipment information. Data is updated daily and accessible across multiple devices and platforms—no software installation required. Clients can monitor cold chain shipments anytime, anywhere.
+                
+              p.description-text
+                | To protect the integrity and confidentiality of your shipment data, all queries are access-controlled and transmitted securely. Tracking records are used solely for logistics coordination and customer support purposes and are stored securely on our authorized data platforms.
+               
+              p.description-text
+                | For questions or urgent inquiries, please contact your project coordinator directly. Contact us at 
+                strong +8862-2694-6168 
+                | or email 
+                strong customer-service@tailormed-intl.com
+                | . TailorMed is committed to providing reliable systems, transparent tracking, and professional service for every shipment.
+    footer.site-footer
+      .container
+        p.site-footer__copy © 2025 TailorMed. All Rights Reserved.
+

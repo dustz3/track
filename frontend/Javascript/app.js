@@ -247,6 +247,89 @@
     return `${day}/${month}/${year}`;
   }
 
+  // 格式化日期時間為歐洲格式 DD/MM/YYYY HH:MM
+  function formatDateTimeToDDMMYYYYHHMM(value) {
+    if (!value) return '—';
+
+    let date = null;
+    let hours = '';
+    let minutes = '';
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+
+      // 嘗試解析 ISO 格式 (YYYY-MM-DD HH:MM:SS 或 YYYY-MM-DDTHH:MM:SS)
+      if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+        // 分離日期和時間部分
+        const parts = trimmed.split(/[\sT]/);
+        const datePart = parts[0];
+        const timePart = parts[1] || '';
+
+        // 解析 YYYY-MM-DD
+        const [year, month, day] = datePart.split('-');
+        date = new Date(`${year}-${month}-${day}`);
+
+        // 解析時間 HH:MM:SS 或 HH:MM
+        if (timePart) {
+          const timeMatch = timePart.match(/(\d{2}):(\d{2})/);
+          if (timeMatch) {
+            hours = timeMatch[1];
+            minutes = timeMatch[2];
+          }
+        }
+      }
+      // 嘗試解析已格式化的日期時間字串 (DD/MM/YYYY HH:MM 或類似格式)
+      else if (/^\d{2}\/\d{2}\/\d{4}/.test(trimmed)) {
+        const parts = trimmed.split(/\s+/);
+        const datePart = parts[0];
+        const timePart = parts[1] || '';
+
+        // 解析 DD/MM/YYYY
+        const [day, month, year] = datePart.split('/');
+        date = new Date(`${year}-${month}-${day}`);
+
+        if (timePart) {
+          const timeMatch = timePart.match(/(\d{2}):(\d{2})/);
+          if (timeMatch) {
+            hours = timeMatch[1];
+            minutes = timeMatch[2];
+          }
+        }
+      }
+      // 嘗試直接解析（適用於其他格式）
+      else {
+        date = new Date(trimmed);
+        // 檢查原始字串是否有時間
+        const timeMatch = trimmed.match(/(\d{2}):(\d{2})/);
+        if (timeMatch) {
+          hours = timeMatch[1];
+          minutes = timeMatch[2];
+        }
+      }
+    } else {
+      date = new Date(value);
+    }
+
+    if (!date || Number.isNaN(date.getTime())) {
+      return typeof value === 'string' ? value : '—';
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    // 如果有時間部分，使用解析到的時間，否則使用日期物件的時間
+    if (hours && minutes) {
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
+    } else if (date.getHours() !== 0 || date.getMinutes() !== 0) {
+      const h = String(date.getHours()).padStart(2, '0');
+      const m = String(date.getMinutes()).padStart(2, '0');
+      return `${day}/${month}/${year} ${h}:${m}`;
+    }
+
+    return `${day}/${month}/${year}`;
+  }
+
   // 查詢貨件資料
   async function fetchTrackingData(orderNo, trackingNo) {
     // 追蹤查詢嘗試
@@ -373,8 +456,13 @@
       .filter(Boolean)
       .join(' ')
       .trim();
-    const lastUpdateText =
-      combinedTimelineDateTime || shipmentData.lastUpdate || '—';
+
+    // 格式化 Last Update 為歐洲格式 DD/MM/YYYY HH:MM
+    const lastUpdateRaw =
+      combinedTimelineDateTime || shipmentData.lastUpdate || '';
+    const lastUpdateText = lastUpdateRaw
+      ? formatDateTimeToDDMMYYYYHHMM(lastUpdateRaw)
+      : '—';
 
     const etaFormatted = formatDateToDDMMYYYY(shipmentData.eta);
 
@@ -608,7 +696,9 @@
       terminalChecked && inTransitLetter && isCompletedLetter(inTransitLetter);
 
     const shouldShowEventTwo =
-      dryIceChecked && destCustomsLetter && isCompletedLetter(destCustomsLetter);
+      dryIceChecked &&
+      destCustomsLetter &&
+      isCompletedLetter(destCustomsLetter);
 
     const filteredEvents = enhancedEvents.filter((eventItem) => {
       const titleNormalized = normalizeEventTitle(eventItem.title);
@@ -813,8 +903,7 @@
       const isProcessingStatus =
         statusCode === TIMELINE_STATUS_CODES.PROCESSING ||
         statusCode === TIMELINE_STATUS_CODES.INTERNATIONAL_IN_TRANSIT;
-      const isScheduledStatus =
-        statusCode === TIMELINE_STATUS_CODES.SCHEDULED;
+      const isScheduledStatus = statusCode === TIMELINE_STATUS_CODES.SCHEDULED;
 
       const shouldShowTbdDate = isProcessingStatus || isScheduledStatus;
       const displayDate = shouldShowTbdDate ? '' : step.date;
@@ -922,10 +1011,14 @@
         connectorWidthPercent = domesticPreset[stageIndex];
         mobileTrackHeightPercent = domesticMobilePreset[stageIndex];
       } else if (isInternational && processedSteps.length === 7) {
-        const internationalPreset = [5, 21, 38, 53, 68, 85, 97];
+        const internationalPreset = [5, 21, 37, 53, 70, 86, 97];
         const internationalMobilePreset = [5, 21, 34, 48, 63, 78, 88];
         const executedStatusCodes = new Set([
           TIMELINE_STATUS_CODES.EXECUTED,
+          TIMELINE_STATUS_CODES.INTERNATIONAL_IN_TRANSIT,
+        ]);
+        const processingStatusCodes = new Set([
+          TIMELINE_STATUS_CODES.PROCESSING,
           TIMELINE_STATUS_CODES.INTERNATIONAL_IN_TRANSIT,
         ]);
 
@@ -936,10 +1029,25 @@
           return acc;
         }, -1);
 
-        const stageIndex = Math.max(
-          0,
-          Math.min(lastExecutedIndex + 1, internationalPreset.length - 1)
+        // 檢查是否有正在處理的步驟
+        const processingIndex = processedSteps.findIndex((step) =>
+          processingStatusCodes.has(step.statusCode)
         );
+
+        let stageIndex;
+        if (processingIndex >= 0) {
+          // 如果有正在處理的步驟，顯示到該步驟的位置
+          stageIndex = Math.max(
+            0,
+            Math.min(processingIndex, internationalPreset.length - 1)
+          );
+        } else {
+          // 如果沒有正在處理的步驟，顯示到最後一個完成步驟的下一個位置
+          stageIndex = Math.max(
+            0,
+            Math.min(lastExecutedIndex + 1, internationalPreset.length - 1)
+          );
+        }
         connectorWidthPercent = internationalPreset[stageIndex];
         mobileTrackHeightPercent = internationalMobilePreset[stageIndex];
       } else {
@@ -1105,10 +1213,9 @@
       } else if (hasDryIceEvent && !existingIcon) {
         const icon = document.createElement('div');
         icon.className = 'timeline-event-icon';
-        icon.innerHTML =
-          `<img src="images/icon-dryice.svg" alt="${
-            primaryDryIceEvent?.title || 'Dry Ice Refilled'
-          }">`;
+        icon.innerHTML = `<img src="images/icon-dryice.svg" alt="${
+          primaryDryIceEvent?.title || 'Dry Ice Refilled'
+        }">`;
         timelineVisual.appendChild(icon);
       } else if (hasDryIceEvent && existingIcon) {
         const imgEl = existingIcon.querySelector('img');
