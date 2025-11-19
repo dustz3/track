@@ -50,7 +50,7 @@
     });
     orderInput.addEventListener('invalid', (event) => {
       event.preventDefault();
-      orderInput.setCustomValidity('Please enter Order No.');
+      orderInput.setCustomValidity('Please enter Job No.');
       orderInput.reportValidity();
     });
   }
@@ -468,7 +468,7 @@
 
     // 更新基本資訊
     const summaryFields = {
-      'Order No.': shipmentData.orderNo || '—',
+      'Job No.': shipmentData.orderNo || '—',
       'Original/Destination': (() => {
         if (
           shipmentData.originDestination &&
@@ -1235,6 +1235,16 @@
         statusIconWrapper.remove();
       }
     }
+
+    // 顯示 feedback 區塊（當訂單完成時）
+    const feedbackSection = resultsPanel?.querySelector('.feedback-section');
+    if (feedbackSection) {
+      if (isOrderCompleted) {
+        feedbackSection.classList.remove('is-hidden');
+      } else {
+        feedbackSection.classList.add('is-hidden');
+      }
+    }
   }
 
   // 顯示載入狀態
@@ -1259,7 +1269,7 @@
     const trackingNo = jobInput.value.trim().toUpperCase();
 
     if (!orderNo) {
-      orderInput.setCustomValidity('Please enter Order No.');
+      orderInput.setCustomValidity('Please enter Job No.');
       orderInput.reportValidity();
       return;
     }
