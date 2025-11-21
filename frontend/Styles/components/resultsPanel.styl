@@ -563,6 +563,28 @@
           &:active
             transform translateY(0)
 
+  .ad-banner
+    margin-top 24px
+    display none
+    width 100%
+    border-radius 8px
+    box-sizing border-box
+    overflow hidden
+    opacity 0.4
+
+    img
+      width 100%
+      height auto
+      display block
+      object-fit contain
+
+    &.is-hidden
+      display none
+
+    // Desktop 樣式 (min-width: 769px)
+    @media (min-width: 769px)
+      display block
+
   .api-debug-panel
     margin-top 16px
     padding 16px
